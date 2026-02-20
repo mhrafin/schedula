@@ -11,8 +11,12 @@ class Meeting(models.Model):
     end_time = models.TimeField()
     location = models.CharField(null=True, blank=True)
     participants = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, null=True, blank=True
+        settings.AUTH_USER_MODEL, blank=True, related_name="meetings_participants_set"
     )
-    organizer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    organizer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="meetings_organizer_set",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
