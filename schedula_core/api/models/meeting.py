@@ -10,7 +10,9 @@ class Meeting(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     location = models.CharField(null=True, blank=True)
-    participants = models.ManyToManyField(settings.AUTH_USER_MODEL, null=True)
+    participants = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, null=True, blank=True
+    )
     organizer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now, auto_now_add=True)
-    modified_at = models.DateTimeField(default=timezone.now, auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
