@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "djoser",
+    "corsheaders",
     # local apps
     "schedula_core",
 ]
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -130,4 +132,14 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+}
+
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+
+
+DJOSER = {
+    "SERIALIZERS": {
+        "user": "schedula_core.api.serializers.custom_userserializer.CustomUserSerializer",
+        "current_user": "schedula_core.api.serializers.custom_userserializer.CustomUserSerializer",
+    }
 }
