@@ -9,6 +9,7 @@ django-debug-toolbar = "*"
 djoser = "*"
 drf-spectacular = "*"
 icalendar = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 
