@@ -58,9 +58,9 @@ All commands run from the workspace root (`schedula/`).
 
 ## Tech Stack
 
-**Frontend:** Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS v4 · shadcn/ui (new-york style) · Radix UI · Lucide React · React Compiler (enabled)
+**Frontend:** Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS v4 · shadcn/ui (new-york style) · Radix UI · Lucide React · React Compiler (enabled) · Zod + React Hook Form (validation)
 
-**Backend:** Django 6 · Django REST Framework · Djoser (token auth) · drf-spectacular (OpenAPI) · django-cors-headers · icalendar · SQLite (dev)
+**Backend:** Python 3.12 · Django 6 · Django REST Framework · Djoser (token auth) · drf-spectacular (OpenAPI) · django-cors-headers · icalendar · SQLite (dev)
 
 ---
 
