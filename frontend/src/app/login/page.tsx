@@ -1,18 +1,28 @@
 "use client";
 
-import { CalendarDays, SendHorizontal } from "lucide-react";
+import { CalendarDays, Eye, EyeOff, SendHorizontal } from "lucide-react";
 import * as z from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const loginFormSchema = z.object({
   username: z.string(),
   password: z.string(),
 });
+
 export default function LoginPage() {
+  const [isPasswordTyping, setIsPasswordTyping] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -20,10 +30,12 @@ export default function LoginPage() {
       password: "",
     },
   });
+
   function onSubmit(data: z.infer<typeof loginFormSchema>) {
     // Do something with the form values.
     console.log(data);
   }
+
   return (
     <div className="bg-muted text-primary m-4 p-4 rounded-xl">
       <div className="flex flex-col">
@@ -61,13 +73,28 @@ export default function LoginPage() {
             render={({ field, fieldState }) => (
               <div>
                 <Label htmlFor="username">Password</Label>
-                <Input
-                  {...field}
-                  id={field.name}
-                  type="password"
-                  className="mt-1"
-                  placeholder="Enter your password"
-                />
+                <div className="relative mt-1">
+                  <Input
+                    {...field}
+                    id={field.name}
+                    type={showPassword ? "text" : "password"}
+                    className="pr-10"
+                    placeholder="Enter your password"
+                    onChange={(e) => {
+                      field.onChange(e);
+                      setIsPasswordTyping(e.target.value.length > 0);
+                    }}
+                  />
+                  {isPasswordTyping && (
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                    >
+                      {showPassword ? <Eye /> : <EyeOff />}
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           />
