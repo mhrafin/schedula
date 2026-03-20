@@ -1,121 +1,52 @@
 # Schedula
 
-A meeting scheduling service built with **Django REST Framework** (backend) and **Next.js** (frontend — WIP). Users can create meetings, manage participants, detect scheduling conflicts, receive email notifications, and export meetings as `.ics` calendar files.
+**Smart meeting scheduling with built-in conflict detection.** Schedula is a full-stack meeting management app that prevents double-bookings, notifies participants automatically, and exports to any calendar.
 
-## Design Decisions
+<!-- ![Schedula Demo](https://via.placeholder.com/800x400?text=Schedula+Demo+Screenshot) -->
+<!-- TODO: Replace with actual screenshot or GIF of the app in action -->
 
-- **Backend**: Django REST Framework — chosen for rapid API development.
-- **Frontend**: Next.js — planned, implementation in progress.
-- **Email**: Uses Django's console email backend for development (emails print to terminal).
-- **Database**: SQLite for local development.
-- **Auth**: Token-based authentication via [Djoser](https://djoser.readthedocs.io/).
+---
 
-## Features
+## Motivation
 
-- **Meeting CRUD** — Create, read, update, and delete meetings (title, description, date, start/end time, location).
-- **Participant management** — Add/remove participants (Django users) to meetings via a many-to-many relationship.
-- **Conflict detection** — Automatically prevents scheduling a meeting when any participant already has an overlapping meeting on the same date/time.
-- **ICS export** — Export any meeting as a standard `.ics` calendar file, compatible with Google Calendar, Outlook, Apple Calendar, etc.
-- **Email notifications** — Participants receive an email when they are added to a meeting (console backend in dev).
-- **API documentation** — Interactive Swagger UI and ReDoc via [drf-spectacular](https://drf-spectacular.readthedocs.io/).
-- **Token authentication** — Register, login, and authenticate API requests with tokens (Djoser + DRF TokenAuthentication).
+Ever tried to schedule a meeting only to realize half your team is already booked? Calendars are supposed to make life easier, but coordinating schedules across multiple people is still a headache.
 
-## Architecture (C4 Model)
+**Schedula was built to solve this.** When you create a meeting and add participants, it automatically checks for conflicts—no more back-and-forth emails asking "does 2pm work?" If there's a clash, you'll know before you hit save.
 
-### Level 1 — System Context
+I wanted a scheduling tool that:
+- **Catches conflicts instantly** — not after you've already sent invites
+- **Works with existing calendars** — export to Google Calendar, Outlook, or Apple Calendar with one click
+- **Keeps everyone in the loop** — automatic email notifications when participants are added
 
-```
-[User] ---Uses---> [Schedula - Meeting Scheduling System]
-```
+---
 
-### Level 2 — Container
+## Quick Start
 
-```
-[User]
-  |
-  v
-[Frontend - Next.js] <----> [Backend API - Django REST Framework]
-                                      |
-                                      v
-                              [SMTP Server (console backend in dev)]
-```
+### Option 1: Run the Full Stack
 
-## Tech Stack
-
-| Layer      | Technology                          |
-| ---------- | ----------------------------------- |
-| Backend    | Django 6.0, Django REST Framework    |
-| Auth       | Djoser, DRF TokenAuthentication      |
-| Calendar   | icalendar (Python)                   |
-| API Docs   | drf-spectacular (Swagger / ReDoc)    |
-| Debug      | django-debug-toolbar                 |
-| Frontend   | Next.js (WIP)                        |
-| Database   | SQLite (dev)                         |
-
-## API Endpoints
-
-| Method | Endpoint                                  | Description                    |
-| ------ | ----------------------------------------- | ------------------------------ |
-| GET    | `/schedula-core/meetings/`                | List all meetings              |
-| POST   | `/schedula-core/meetings/`                | Create a meeting               |
-| GET    | `/schedula-core/meetings/{id}/`           | Retrieve a meeting             |
-| PUT    | `/schedula-core/meetings/{id}/`           | Update a meeting               |
-| PATCH  | `/schedula-core/meetings/{id}/`           | Partial update a meeting       |
-| DELETE | `/schedula-core/meetings/{id}/`           | Delete a meeting               |
-| GET    | `/schedula-core/meetings/{id}/export/`    | Export meeting as `.ics` file  |
-| POST   | `/auth/users/`                            | Register a new user            |
-| POST   | `/auth/token/login/`                      | Obtain auth token              |
-| POST   | `/auth/token/logout/`                     | Destroy auth token             |
-| GET    | `/api/schema/swagger-ui/`                 | Swagger UI                     |
-| GET    | `/api/schema/redoc/`                      | ReDoc                          |
-
-## Getting Started
-
-### Prerequisites
-
-- **Python 3.12+**
-- **pipenv**
-
-### 1. Clone the repository
+**Prerequisites:** Python 3.12+, Node.js 18+, pipenv
 
 ```bash
+# Clone and enter the project
 git clone <repository-url>
 cd schedula
-```
 
-### 2. Install dependencies
-
-```bash
+# Start the backend (terminal 1)
 pipenv install
-```
-
-### 3. Run migrations
-
-```bash
 pipenv run python manage.py migrate
-```
-
-### 4. Create a superuser
-
-```bash
-pipenv run python manage.py createsuperuser
-```
-
-### 5. Start the development server
-
-```bash
 pipenv run python manage.py runserver
+
+# Start the frontend (terminal 2)
+cd frontend
+npm install
+npm run dev
 ```
 
-The API will be available at **http://127.0.0.1:8000/**.
+- **Frontend:** http://localhost:3000
+- **Backend API:** http://127.0.0.1:8000
+- **API Docs:** http://127.0.0.1:8000/api/schema/swagger-ui/
 
-### 6. Explore the API
-
-- Swagger UI: http://127.0.0.1:8000/api/schema/swagger-ui/
-- ReDoc: http://127.0.0.1:8000/api/schema/redoc/
-- Admin panel: http://127.0.0.1:8000/admin/
-
-### Quick usage example
+### Option 2: API-Only Quick Test
 
 ```bash
 # Register a user
@@ -123,58 +54,211 @@ curl -X POST http://127.0.0.1:8000/auth/users/ \
   -H "Content-Type: application/json" \
   -d '{"username": "alice", "password": "strongpass123"}'
 
-# Get a token
+# Get an auth token
 curl -X POST http://127.0.0.1:8000/auth/token/login/ \
   -H "Content-Type: application/json" \
   -d '{"username": "alice", "password": "strongpass123"}'
 
-# Create a meeting (replace <token> with the token from above)
+# Create a meeting (replace <token>)
 curl -X POST http://127.0.0.1:8000/schedula-core/meetings/ \
-  -H "Content-Type: application/json" \
   -H "Authorization: Token <token>" \
+  -H "Content-Type: application/json" \
   -d '{
     "name": "Sprint Planning",
     "description": "Plan the next sprint",
-    "date": "2026-03-01",
+    "date": "2026-03-25",
     "start_time": "10:00:00",
     "end_time": "11:00:00",
     "location": "Room 42",
     "participants": []
   }'
-
-# Export a meeting as ICS
-curl -H "Authorization: Token <token>" \
-  http://127.0.0.1:8000/schedula-core/meetings/1/export/ -o event.ics
 ```
+
+---
+
+## Features
+
+| Feature | Description |
+|---------|-------------|
+| **Conflict Detection** | Automatically prevents double-booking when any participant has an overlapping meeting |
+| **ICS Export** | Download any meeting as a `.ics` file compatible with all major calendars |
+| **Email Notifications** | Participants are notified automatically when added to a meeting |
+| **Token Authentication** | Secure API access via Djoser + DRF TokenAuthentication |
+| **Interactive API Docs** | Swagger UI and ReDoc for easy API exploration |
+| **Organizer Tracking** | Meetings are automatically linked to their creator |
+
+---
+
+## Usage
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| **Meetings** |
+| `GET` | `/schedula-core/meetings/` | List all meetings |
+| `POST` | `/schedula-core/meetings/` | Create a meeting |
+| `GET` | `/schedula-core/meetings/{id}/` | Retrieve a meeting |
+| `PUT` | `/schedula-core/meetings/{id}/` | Full update |
+| `PATCH` | `/schedula-core/meetings/{id}/` | Partial update |
+| `DELETE` | `/schedula-core/meetings/{id}/` | Delete a meeting |
+| `GET` | `/schedula-core/meetings/{id}/export/` | Export as `.ics` file |
+| **Authentication** |
+| `POST` | `/auth/users/` | Register a new user |
+| `POST` | `/auth/token/login/` | Obtain auth token |
+| `POST` | `/auth/token/logout/` | Revoke auth token |
+| **Documentation** |
+| `GET` | `/api/schema/swagger-ui/` | Swagger UI |
+| `GET` | `/api/schema/redoc/` | ReDoc |
+
+### Frontend Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Home page |
+| `/login` | User login |
+| `/meeting/create` | Create a new meeting |
+
+### Export a Meeting to Your Calendar
+
+```bash
+curl -H "Authorization: Token <token>" \
+  http://127.0.0.1:8000/schedula-core/meetings/1/export/ \
+  -o sprint-planning.ics
+```
+
+Then import `sprint-planning.ics` into Google Calendar, Outlook, or Apple Calendar.
+
+---
+
+## Tech Stack
+
+### Backend
+
+| Component | Technology |
+|-----------|------------|
+| Framework | Django 6.0 + Django REST Framework |
+| Authentication | Djoser + DRF TokenAuthentication |
+| Calendar Export | icalendar |
+| API Documentation | drf-spectacular (Swagger / ReDoc) |
+| Database | SQLite (development) |
+| Python | 3.12+ |
+
+### Frontend
+
+| Component | Technology |
+|-----------|------------|
+| Framework | Next.js 16 (App Router) |
+| UI Library | React 19 |
+| Language | TypeScript 5 (strict mode) |
+| Styling | Tailwind CSS v4 |
+| Components | shadcn/ui + Radix UI |
+| Icons | Lucide React |
+| Optimization | React Compiler enabled |
+
+---
 
 ## Project Structure
 
 ```
 schedula/
-├── config/                     # Django project configuration
+├── config/                     # Django project settings
 │   ├── settings/
 │   │   ├── base.py             # Shared settings
-│   │   ├── local.py            # Development settings (default)
+│   │   ├── local.py            # Development settings
 │   │   └── production.py       # Production settings
-│   ├── urls.py                 # Root URL configuration
-│   └── wsgi.py / asgi.py
+│   └── urls.py                 # Root URL configuration
 ├── schedula_core/              # Main Django app
 │   ├── api/
-│   │   ├── models/
-│   │   │   └── meeting.py      # Meeting model
-│   │   ├── serializers/
-│   │   │   └── meeting_serializers.py
-│   │   ├── views/
-│   │   │   └── meeting_views.py  # ViewSet + ICS export
-│   │   ├── services/
-│   │   │   └── conflict.py     # Conflict detection logic
-│   │   ├── signals/
-│   │   │   └── send_email.py   # Email notification on participant add
-│   │   └── urls.py             # App-level URL routing
-│   ├── apps.py
+│   │   ├── models/             # Meeting model
+│   │   ├── serializers/        # DRF serializers
+│   │   ├── views/              # ViewSets + ICS export
+│   │   ├── services/           # Conflict detection logic
+│   │   └── signals/            # Email notifications
 │   └── migrations/
-├── frontend/                   # Next.js frontend (WIP)
+├── frontend/                   # Next.js frontend
+│   └── src/
+│       ├── app/                # App Router routes
+│       ├── components/
+│       │   ├── ui/             # shadcn/ui primitives
+│       │   └── meeting/        # Feature components
+│       └── lib/                # Utilities
 ├── manage.py
 ├── Pipfile                     # Python dependencies
 └── db.sqlite3                  # SQLite database (dev)
 ```
+
+---
+
+## Contributing
+
+### Clone and Setup
+
+```bash
+git clone <repository-url>
+cd schedula
+
+# Backend
+pipenv install
+pipenv run python manage.py migrate
+
+# Frontend
+cd frontend
+npm install
+```
+
+### Run Tests
+
+```bash
+# Backend tests
+pipenv run python manage.py test
+
+# Frontend type-check
+cd frontend && npx tsc --noEmit
+
+# Frontend lint
+cd frontend && npm run lint
+```
+
+### Development Servers
+
+```bash
+# Backend (from root)
+pipenv run python manage.py runserver
+
+# Frontend (from frontend/)
+npm run dev
+```
+
+### Submit a Pull Request
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request to `main`
+
+---
+
+## Architecture
+
+```
+┌─────────────────┐     HTTP      ┌──────────────────────────────┐
+│                 │◄────────────►│                              │
+│  Next.js 16     │               │  Django REST Framework       │
+│  (Frontend)     │               │  (Backend API)               │
+│                 │               │                              │
+│  localhost:3000 │               │  localhost:8000              │
+└─────────────────┘               └──────────────┬───────────────┘
+                                                 │
+                                                 ▼
+                                  ┌──────────────────────────────┐
+                                  │  SQLite (dev) / PostgreSQL   │
+                                  └──────────────────────────────┘
+```
+
+---
+
+## License
+
+This project is available under the MIT License.
