@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import Link from "next/link";
 
 const loginFormSchema = z.object({
   username: z.string(),
@@ -37,16 +38,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="bg-muted text-primary m-4 p-4 rounded-xl">
-      <div className="flex flex-col">
-        <div className="bg-accent rounded-md self-center">
-          <CalendarDays className="m-1" />
-        </div>
-        <h1 className="self-center text-2xl">Welcome Back</h1>
-        <h2 className="text-center text-[15px] text-muted-foreground">
-          Please enter your details to sign in.
-        </h2>
+    <div className="bg-muted text-primary m-4 mt-16 p-4 rounded-xl flex flex-col w-72 flex-initial place-self-center">
+      <div className="bg-accent rounded-md self-center">
+        <CalendarDays className="m-1" />
       </div>
+      <h1 className="self-center text-2xl">Welcome Back</h1>
+      <h2 className="text-center text-[15px] text-muted-foreground">
+        Please enter your details to sign in.
+      </h2>
+
       <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-6 mt-6">
           {/* Username */}
@@ -113,6 +113,10 @@ export default function LoginPage() {
           </div>
         </div>
       </form>
+      <div className="text-[14px] text-center">
+        Don't have an account?
+        <Link href="register"> Sign Up</Link>
+      </div>
     </div>
   );
 }
