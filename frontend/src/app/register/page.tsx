@@ -38,7 +38,7 @@ export default function RegisterPage() {
           <div className="absolute flex flex-col gap-6 p-10 z-10 text-primary-foreground">
             <div className="flex flex-row items-center mb-8">
               <CalendarDays className="size-8 mr-2" />
-              <h3 className="text-4xl text-dispay">Schedula</h3>
+              <h1 className="text-4xl text-dispay">Schedula</h1>
             </div>
             <h3 className="text-4xl font-bold">
               Master your schedule, effortlessly
@@ -70,7 +70,11 @@ export default function RegisterPage() {
             </div>
           </div>
         </div>
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-8 mt-10">
+          <div className="flex flex-col mb-10 gap-2">
+            <h2 className="text-4xl">Create Your Account</h2>
+            <h3>Start scheduling meetings without the hassle.</h3>
+          </div>
           <form id="register-form" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               <Controller
