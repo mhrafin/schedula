@@ -12,7 +12,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import Username from "@/components/forms/controllers/username"
+import ControllerInput from "@/components/forms/controllers/username"
 
 const registerFormSchema = z.object({
   email: z.string(),
@@ -82,21 +82,8 @@ export default function RegisterPage() {
           </div>
           <form id="register-form" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
-              {/* <Controller
-                name="username"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <div>
-                    <Label htmlFor="username">Username</Label>
-                    <Input
-                      {...field}
-                      id={field.name}
-                      placeholder="Enter a username"
-                    />
-                  </div>
-                )}
-              /> */}
-              <Username control={form.control} name={"username"} />
+              <ControllerInput control={form.control} name={"username"} placeholder="Enter Username" label="Username" />
+
             </div>
           </form>
         </div>

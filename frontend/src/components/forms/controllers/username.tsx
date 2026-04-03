@@ -2,21 +2,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Controller, Path, type Control, type FieldValues } from "react-hook-form";
 
-function Username<T extends FieldValues>({ control, name }: { control: Control<T>, name: Path<T> }) {
+function ControllerInput<T extends FieldValues>({ control, name, placeholder, label }: { control: Control<T>, name: Path<T>, placeholder: string, label: string }) {
     return (<Controller
         name={name}
         control={control}
         render={({ field, fieldState }) => (
             <div>
-                <Label htmlFor={name}>Username</Label>
+                <Label htmlFor={name}>{label}</Label>
                 <Input
                     {...field}
                     id={field.name}
-                    placeholder="Enter a username"
+                    placeholder={placeholder}
                 />
             </div>
         )}
     />)
 }
 
-export default Username
+export default ControllerInput
