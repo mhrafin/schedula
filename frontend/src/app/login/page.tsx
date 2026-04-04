@@ -12,7 +12,7 @@ import Link from "next/link";
 
 /**
  * Login Page - Midnight Meridian Design System
- * 
+ *
  * Design Implementation:
  * - Card-First architecture with surface-container
  * - rounded-xl for major container
