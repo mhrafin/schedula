@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Link from "next/link";
+import PasswordInputController from "@/components/forms/controllers/password-input-controller";
+import { fields } from "@hookform/resolvers/ajv/src/__tests__/__fixtures__/data.js";
 
 /**
  * Login Page - Midnight Meridian Design System
@@ -89,7 +91,7 @@ export default function LoginPage() {
             />
 
             {/* Password Field */}
-            <Controller
+            {/* <Controller
               name="password"
               control={form.control}
               render={({ field, fieldState }) => (
@@ -130,7 +132,8 @@ export default function LoginPage() {
                   )}
                 </div>
               )}
-            />
+            /> */}
+            <PasswordInputController control={form.control} name="password" />
 
             {/* Submit Button - Primary with sapphire glow */}
             <Button type="submit" form="login-form" className="w-full mt-2">
