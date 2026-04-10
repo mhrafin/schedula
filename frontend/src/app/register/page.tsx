@@ -12,22 +12,32 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import TextInputController from "@/components/forms/controllers/text-input-controller"
+import TextInputController from "@/components/forms/controllers/text-input-controller";
+import PasswordInputController from "@/components/forms/controllers/password-input-controller";
 
-const registerFormSchema = z.object({
-  email: z.string(),
-  username: z.string().min(1, "Username is required"),
-  password: z.string(),
-  confirm_pass: z.string(),
-});
+const registerFormSchema = z
+  .object({
+    email: z.string(),
+    username: z.string().min(1, "Username is required"),
+    password: z.string(),
+    confirm_pass: z.string(),
+  })
+  .refine((data) => data.password === data.confirm_pass, {
+    message: "Passwords don't match!",
+    path: ["confirm_pass"],
+  });
 
 export default function RegisterPage() {
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
+    // if we don't provide default values the components become uncontrolled. And when user inputs in those component it turns into controlled. Browsers don't like this behaviour.
     defaultValues: {
+      email: "",
       username: "",
-      password: ""
-    }
+      password: "",
+      confirm_pass: "",
+    },
+    mode: "onChange",
   });
 
   function onSubmit(data: z.infer<typeof registerFormSchema>) {
@@ -83,10 +93,27 @@ export default function RegisterPage() {
           <form id="register-form" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               {/* Username */}
-              <TextInputController control={form.control} name={"username"} placeholder="Enter Username" label="Username" />
+              <TextInputController
+                control={form.control}
+                name={"username"}
+                placeholder="Enter Username"
+                label="Username"
+              />
               {/* Email */}
-              <TextInputController control={form.control} name="email" placeholder="Enter your email" label="Email" />
+              <TextInputController
+                control={form.control}
+                name="email"
+                placeholder="Enter your email"
+                label="Email"
+              />
               {/* Password */}
+              <PasswordInputController control={form.control} name="password" />
+              {/* Confirm Password */}
+              <PasswordInputController
+                control={form.control}
+                name="confirm_pass"
+                label="Confirm Password"
+              />
             </div>
           </form>
         </div>

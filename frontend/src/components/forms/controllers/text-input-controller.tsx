@@ -23,9 +23,11 @@ function TextInputController<T extends FieldValues>({
       name={name}
       control={control}
       render={({ field, fieldState }) => (
-        <div>
+        <div className="space-y-2">
           <Label htmlFor={name}>{label}</Label>
-          <Input {...field} id={field.name} placeholder={placeholder} />
+          <div className="relative">
+            <Input {...field} id={field.name} placeholder={placeholder} />
+          </div>
         </div>
       )}
     />
