@@ -23,13 +23,6 @@ import { fields } from "@hookform/resolvers/ajv/src/__tests__/__fixtures__/data.
  * - Manrope typography hierarchy
  */
 export default function LoginPage() {
-  const [isPasswordTyping, setIsPasswordTyping] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
-
   const loginFormSchema = z.object({
     username: z.string().min(1, "Username is required"),
     password: z.string().min(1, "Password is required"),
