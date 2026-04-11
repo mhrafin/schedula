@@ -27,6 +27,11 @@ function TextInputController<T extends FieldValues>({
           <Label htmlFor={name}>{label}</Label>
           <div className="relative">
             <Input {...field} id={field.name} placeholder={placeholder} />
+            {fieldState.error && (
+              <p className="text-xs font-medium text-destructive">
+                {fieldState.error.message}
+              </p>
+            )}
           </div>
         </div>
       )}

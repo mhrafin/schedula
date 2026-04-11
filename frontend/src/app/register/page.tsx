@@ -14,10 +14,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import TextInputController from "@/components/forms/controllers/text-input-controller";
 import PasswordInputController from "@/components/forms/controllers/password-input-controller";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const registerFormSchema = z
   .object({
-    email: z.string(),
+    email: z.email({ error: "Invalid Email Format!" }),
     username: z.string().min(1, "Username is required"),
     password: z.string(),
     confirm_pass: z.string(),
@@ -114,8 +116,25 @@ export default function RegisterPage() {
                 name="confirm_pass"
                 label="Confirm Password"
               />
+              {/* Submit Button - Primary with sapphire glow */}
+              <Button
+                type="submit"
+                form="register-form"
+                className="w-full mt-2"
+              >
+                Create Account
+              </Button>
             </div>
           </form>
+          <p className="text-body-standard text-muted-foreground text-center mt-6">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="font-semibold text-primary hover:text-primary/80 transition-colors"
+            >
+              Sign In
+            </Link>
+          </p>
         </div>
       </div>
     </div>
