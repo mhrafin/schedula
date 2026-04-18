@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${manrope.variable} font-sans antialiased`}>
         {children}
+        <Toaster />
       </body>
     </html>
   );

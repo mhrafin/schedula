@@ -16,6 +16,8 @@ import TextInputController from "@/components/forms/controllers/text-input-contr
 import PasswordInputController from "@/components/forms/controllers/password-input-controller";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import api from "@/lib/axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const registerFormSchema = z
   .object({
@@ -42,8 +44,30 @@ export default function RegisterPage() {
     mode: "onChange",
   });
 
-  function onSubmit(data: z.infer<typeof registerFormSchema>) {
+  async function onSubmit(data: z.infer<typeof registerFormSchema>) {
     console.log(data);
+    try {
+      const response = await api.post("/auth/users/", {
+        email: data.email,
+        username: data.username,
+        password: data.password,
+      });
+      console.log("RESPONSE: ", response);
+    } catch (error: any) {
+      const errorData = error.response.data;
+      if (errorData && typeof errorData === "object") {
+        Object.values(errorData).forEach((fieldErrors: any) => {
+          if (Array.isArray(fieldErrors)) {
+            fieldErrors.forEach((err: string) => toast.error(err));
+          } else if (typeof fieldErrors === "string") {
+            toast.error(fieldErrors);
+          }
+        });
+      } else {
+        toast.error("An error occured during registration.");
+      }
+      console.log("ERROR: ", error.response);
+    }
   }
 
   return (
@@ -55,7 +79,7 @@ export default function RegisterPage() {
           <div className="absolute flex flex-col gap-6 p-10 z-10 text-primary-foreground">
             <div className="flex flex-row items-center mb-8">
               <CalendarDays className="size-8 mr-2" />
-              <h1 className="text-4xl text-dispay">Schedula</h1>
+              <h1 className="text-4xl text-display">Schedula</h1>
             </div>
             <h3 className="text-4xl font-bold">
               Master your schedule, effortlessly
