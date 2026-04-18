@@ -1,26 +1,318 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Midnight Meridian Design System
+ * ================================
+ * Creative North Star: The Executive Chronograph
+ * A high-performance design system built for professional precision and editorial clarity.
+ * 
+ * Palette: "Slate & Sapphire" foundation
+ * Typography: Manrope exclusively
+ * Architecture: Card-First with tonal layering
+ */
 
 @theme inline {
+  /* Typography */
+  --font-sans: var(--font-manrope);
+  --font-mono: var(--font-manrope);
+
+  /* Color mappings to Tailwind */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-outline-variant: var(--outline-variant);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Chart colors */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Deep Blue for gradients */
+  --color-deep-blue: var(--deep-blue);
+
+  /* Border Radius System
+   * rounded-xl (1rem/16px) for major containers
+   * rounded-lg (0.75rem/12px) for internal components
+   */
+  --radius-sm: 0.375rem;  /* 6px */
+  --radius-md: 0.5rem;    /* 8px */
+  --radius-lg: 0.75rem;   /* 12px - internal components */
+  --radius-xl: 1rem;      /* 16px - major containers */
+  --radius-2xl: 1.25rem;  /* 20px */
+  --radius-3xl: 1.5rem;   /* 24px */
+  --radius-4xl: 2rem;     /* 32px */
+
+  /* Shadow System
+   * Shadow-SM: Standard cards - slight lift from surface
+   * Shadow-LG: FABs and high-priority notifications with colored tint (Blue 500/20)
+   */
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 3px 0 rgb(15 23 42 / 0.06);
+  --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.06), 0 2px 4px -2px rgb(15 23 42 / 0.06);
+  --shadow-lg: 0 10px 15px -3px rgb(43 108 238 / 0.12), 0 4px 6px -4px rgb(43 108 238 / 0.08);
+  --shadow-lg-slate: 0 10px 15px -3px rgb(15 23 42 / 0.08), 0 4px 6px -4px rgb(15 23 42 / 0.06);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* =============================================================================
+   LIGHT MODE - Midnight Meridian
+   ============================================================================= */
+:root {
+  /* Surface Hierarchy (The "No-Line" Rule)
+   * Sectioning achieved through background value shifts, not borders
+   */
+  --surface: #f6f6f8;              /* Base: Global stage */
+  --surface-container: #ffffff;    /* Tier 1: Primary content cards */
+  --surface-container-high: #f1f5f9; /* Tier 2: Hover states, internal grouping */
+  
+  /* Ghost boundary definition - outline-variant at 50% opacity */
+  --outline-variant: rgb(148 163 184 / 0.5); /* slate-400/50 */
+
+  /* Background uses surface base */
+  --background: #f6f6f8;
+  --foreground: #0f172a; /* slate-900 - No pure black! */
+
+  /* Card surfaces */
+  --card: #ffffff;
+  --card-foreground: #0f172a; /* slate-900 */
+
+  /* Popover */
+  --popover: #ffffff;
+  --popover-foreground: #0f172a; /* slate-900 */
+
+  /* Primary: Sapphire Blue */
+  --primary: #2563eb; /* blue-600 - Sapphire */
+  --primary-foreground: #ffffff;
+  
+  /* Deep Blue for gradients */
+  --deep-blue: #1e40af; /* blue-800 */
+
+  /* Secondary */
+  --secondary: #f1f5f9; /* slate-100 */
+  --secondary-foreground: #1e293b; /* slate-800 */
+
+  /* Muted */
+  --muted: #f1f5f9; /* slate-100 */
+  --muted-foreground: #64748b; /* slate-500 */
+
+  /* Accent - Sapphire tint for active states (primary/10) */
+  --accent: rgb(37 99 235 / 0.1); /* blue-600/10 */
+  --accent-foreground: #1e293b; /* slate-800 */
+
+  /* Destructive */
+  --destructive: #dc2626; /* red-600 */
+
+  /* Borders - following "No-Line" rule, minimal use */
+  --border: #e2e8f0; /* slate-200 */
+  --input: #e2e8f0; /* slate-200 */
+  --ring: #2563eb; /* blue-600 - Sapphire for focus rings */
+
+  /* Chart colors - Slate & Sapphire harmonious */
+  --chart-1: #2563eb; /* blue-600 */
+  --chart-2: #0891b2; /* cyan-600 */
+  --chart-3: #0f172a; /* slate-900 */
+  --chart-4: #f59e0b; /* amber-500 */
+  --chart-5: #64748b; /* slate-500 */
+
+  /* Sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a; /* slate-900 */
+  --sidebar-primary: #2563eb; /* blue-600 */
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgb(37 99 235 / 0.1); /* blue-600/10 - tinted focus */
+  --sidebar-accent-foreground: #1e293b; /* slate-800 */
+  --sidebar-border: #e2e8f0; /* slate-200 */
+  --sidebar-ring: #2563eb; /* blue-600 */
+
+  /* Base radius for calculations */
+  --radius: 0.75rem;
+}
+
+/* =============================================================================
+   DARK MODE - Midnight Meridian Dark
+   Complementary Slate & Sapphire theme
+   ============================================================================= */
+.dark {
+  /* Surface Hierarchy - Dark variant */
+  --surface: #0f172a;              /* slate-900 - Global stage */
+  --surface-container: #1e293b;    /* slate-800 - Primary content cards */
+  --surface-container-high: #334155; /* slate-700 - Hover states */
+
+  /* Ghost boundary - lighter for dark mode */
+  --outline-variant: rgb(148 163 184 / 0.25); /* slate-400/25 */
+
+  --background: #0f172a; /* slate-900 */
+  --foreground: #f8fafc; /* slate-50 */
+
+  --card: #1e293b; /* slate-800 */
+  --card-foreground: #f8fafc; /* slate-50 */
+
+  --popover: #1e293b; /* slate-800 */
+  --popover-foreground: #f8fafc; /* slate-50 */
+
+  /* Primary: Brighter Sapphire for dark mode */
+  --primary: #3b82f6; /* blue-500 */
+  --primary-foreground: #ffffff;
+
+  /* Deep Blue */
+  --deep-blue: #2563eb; /* blue-600 */
+
+  /* Secondary */
+  --secondary: #334155; /* slate-700 */
+  --secondary-foreground: #f8fafc; /* slate-50 */
+
+  /* Muted */
+  --muted: #334155; /* slate-700 */
+  --muted-foreground: #94a3b8; /* slate-400 */
+
+  /* Accent */
+  --accent: rgb(59 130 246 / 0.15); /* blue-500/15 */
+  --accent-foreground: #f8fafc; /* slate-50 */
+
+  /* Destructive */
+  --destructive: #ef4444; /* red-500 */
+
+  /* Borders */
+  --border: rgb(248 250 252 / 0.1); /* slate-50/10 */
+  --input: rgb(248 250 252 / 0.15); /* slate-50/15 */
+  --ring: #3b82f6; /* blue-500 */
+
+  /* Chart colors - Dark mode adjusted */
+  --chart-1: #3b82f6; /* blue-500 */
+  --chart-2: #06b6d4; /* cyan-500 */
+  --chart-3: #f8fafc; /* slate-50 */
+  --chart-4: #fbbf24; /* amber-400 */
+  --chart-5: #94a3b8; /* slate-400 */
+
+  /* Sidebar - Dark */
+  --sidebar: #1e293b; /* slate-800 */
+  --sidebar-foreground: #f8fafc; /* slate-50 */
+  --sidebar-primary: #3b82f6; /* blue-500 */
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgb(59 130 246 / 0.15); /* blue-500/15 */
+  --sidebar-accent-foreground: #f8fafc; /* slate-50 */
+  --sidebar-border: rgb(248 250 252 / 0.1); /* slate-50/10 */
+  --sidebar-ring: #3b82f6; /* blue-500 */
+}
+
+/* =============================================================================
+   BASE LAYER STYLES
+   ============================================================================= */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  /* Typography defaults - enforce Manrope characteristics */
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* =============================================================================
+   UTILITY CLASSES - Midnight Meridian Specific
+   ============================================================================= */
+@layer utilities {
+  /* Surface utilities */
+  .bg-surface {
+    background-color: var(--surface);
+  }
+  .bg-surface-container {
+    background-color: var(--surface-container);
+  }
+  .bg-surface-container-high {
+    background-color: var(--surface-container-high);
+  }
+
+  /* Outline variant for ghost boundaries */
+  .border-outline-variant {
+    border-color: var(--outline-variant);
+  }
+
+  /* Shadow utilities */
+  .shadow-card {
+    box-shadow: var(--shadow-sm);
+  }
+  .shadow-elevated {
+    box-shadow: var(--shadow-lg);
+  }
+  .shadow-elevated-slate {
+    box-shadow: var(--shadow-lg-slate);
+  }
+
+  /* Gradient utilities for Glass & Gradient Rule */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--deep-blue) 100%);
+  }
+  .bg-gradient-primary-subtle {
+    background: linear-gradient(135deg, rgb(37 99 235 / 0.1) 0%, rgb(30 64 175 / 0.1) 100%);
+  }
+
+  /* Glassmorphism for floating elements */
+  .glass {
+    background: rgb(255 255 255 / 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .dark .glass {
+    background: rgb(30 41 59 / 0.8);
+  }
+
+  /* Typography utilities based on Manrope scale */
+  .text-display {
+    @apply text-2xl font-bold tracking-tight; /* 24px - Display/Logo */
+  }
+  .text-conflict-header {
+    @apply text-lg font-bold; /* 18px - Conflict Headers */
+  }
+  .text-body-large {
+    @apply text-base font-semibold; /* 16px - Card titles */
+  }
+  .text-body-standard {
+    @apply text-sm font-medium; /* 14px - Descriptions */
+  }
+  .text-label {
+    @apply text-xs font-bold uppercase tracking-wide; /* 12px - Timestamps, metadata */
+  }
+  .text-micro {
+    font-size: 10px;
+    @apply font-bold; /* 10px - Mobile nav labels */
+  }
 }
