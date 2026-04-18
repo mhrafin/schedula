@@ -1,156 +1,194 @@
 "use client";
 
-import { Controller, useForm } from "react-hook-form";
+import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { CalendarDays } from "lucide-react";
+import { useForm } from "react-hook-form";
+import api from "@/lib/axios";
+import toast from "react-hot-toast";
 import * as z from "zod";
-import { CalendarDays, Divide } from "lucide-react";
+
+import PasswordInputController from "@/components/forms/controllers/password-input-controller";
+import TextInputController from "@/components/forms/controllers/text-input-controller";
 import {
   Avatar,
   AvatarFallback,
   AvatarGroup,
   AvatarImage,
 } from "@/components/ui/avatar";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import TextInputController from "@/components/forms/controllers/text-input-controller";
-import PasswordInputController from "@/components/forms/controllers/password-input-controller";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import api from "@/lib/axios";
-import toast, { Toaster } from "react-hot-toast";
 
 const registerFormSchema = z
   .object({
-    email: z.email({ error: "Invalid Email Format!" }),
+    email: z.email({ error: "Invalid email format." }),
     username: z.string().min(1, "Username is required"),
-    password: z.string(),
-    confirm_pass: z.string(),
+    password: z.string().min(1, "Password is required"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
   })
-  .refine((data) => data.password === data.confirm_pass, {
+  .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match!",
-    path: ["confirm_pass"],
+    path: ["confirmPassword"],
   });
 
+type RegisterFormValues = z.infer<typeof registerFormSchema>;
+
+interface ApiErrorPayload {
+  [fieldName: string]: string | string[];
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return (
+    Array.isArray(value) && value.every((item) => typeof item === "string")
+  );
+}
+
+function isApiErrorPayload(value: unknown): value is ApiErrorPayload {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  return Object.values(value).every(
+    (fieldError) => typeof fieldError === "string" || isStringArray(fieldError),
+  );
+}
+
 export default function RegisterPage() {
-  const form = useForm<z.infer<typeof registerFormSchema>>({
+  const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerFormSchema),
-    // if we don't provide default values the components become uncontrolled. And when user inputs in those component it turns into controlled. Browsers don't like this behaviour.
     defaultValues: {
       email: "",
       username: "",
       password: "",
-      confirm_pass: "",
+      confirmPassword: "",
     },
     mode: "onChange",
   });
 
-  async function onSubmit(data: z.infer<typeof registerFormSchema>) {
-    console.log(data);
+  async function onSubmit(data: RegisterFormValues): Promise<void> {
     try {
-      const response = await api.post("/auth/users/", {
+      await api.post("/auth/users/", {
         email: data.email,
         username: data.username,
         password: data.password,
       });
-      console.log("RESPONSE: ", response);
-    } catch (error: any) {
-      const errorData = error.response.data;
-      if (errorData && typeof errorData === "object") {
-        Object.values(errorData).forEach((fieldErrors: any) => {
-          if (Array.isArray(fieldErrors)) {
-            fieldErrors.forEach((err: string) => toast.error(err));
-          } else if (typeof fieldErrors === "string") {
-            toast.error(fieldErrors);
-          }
-        });
-      } else {
-        toast.error("An error occured during registration.");
+      toast.success("Account created. You can sign in now.");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const errorData = error.response?.data;
+
+        if (isApiErrorPayload(errorData)) {
+          Object.values(errorData).forEach((fieldErrors) => {
+            if (typeof fieldErrors === "string") {
+              toast.error(fieldErrors);
+              return;
+            }
+
+            fieldErrors.forEach((message) => toast.error(message));
+          });
+          return;
+        }
       }
-      console.log("ERROR: ", error.response);
+
+      toast.error("An error occurred during registration.");
     }
   }
 
   return (
-    <div className="bg-surface">
-      <div className="m-4 rounded-xl flex flex-row bg-surface-container h-dvh">
-        <div className="relative flex items-center w-1/2">
-          <div className="bg-[url(/register/register.jpg)] bg-center bg-cover h-full w-full rounded-tl-2xl rounded-bl-2xl opacity-80 absolute" />
-          <div className="bg-gradient-primary opacity-90 h-full w-full rounded-tl-xl rounded-bl-xl"></div>
-          <div className="absolute flex flex-col gap-6 p-10 z-10 text-primary-foreground">
-            <div className="flex flex-row items-center mb-8">
-              <CalendarDays className="size-8 mr-2" />
-              <h1 className="text-4xl text-display">Schedula</h1>
+    <div className="min-h-screen bg-surface p-4 md:p-6">
+      <div className="mx-auto flex min-h-[calc(100vh-2rem)] max-w-6xl flex-col overflow-hidden rounded-xl bg-surface-container shadow-card md:min-h-[calc(100vh-3rem)] lg:min-h-0 lg:flex-row">
+        <section className="relative flex min-h-[320px] flex-1 items-end lg:min-h-full lg:max-w-[52%]">
+          <div className="absolute inset-0 bg-[url(/register/register.jpg)] bg-cover bg-center" />
+          <div className="absolute inset-0 bg-gradient-primary opacity-90" />
+          <div className="relative z-10 flex w-full flex-col gap-6 p-8 text-primary-foreground sm:p-10">
+            <div className="flex items-center gap-2">
+              <CalendarDays className="size-8" />
+              <h1 className="text-display">Schedula</h1>
             </div>
-            <h3 className="text-4xl font-bold">
+
+            <h2 className="text-4xl font-bold leading-tight lg:text-5xl">
               Master your schedule, effortlessly
-            </h3>
-            <p>
+            </h2>
+
+            <p className="max-w-xl text-body-standard text-primary-foreground/90">
               Join thousands of professionals who save hours every week by
               eliminating scheduling conflicts and endless email chains.
             </p>
-            <div className="flex flex-row items-center mt-8">
-              <AvatarGroup className="mr-4">
+
+            <div className="mt-2 flex items-center">
+              <AvatarGroup className="mr-4 -space-x-3 *:data-[slot=avatar]:ring-primary-foreground/70">
                 <Avatar>
-                  <AvatarImage src="/register/avatar1.jpg" alt="@shadcn" />
+                  <AvatarImage src="/register/avatar1.jpg" alt="Amanda C" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <Avatar>
                   <AvatarImage
                     src="/register/avatar2.jpg"
-                    alt="@maxleiter"
+                    alt="Leo R"
                     className="object-cover object-center"
                   />
                   <AvatarFallback>LR</AvatarFallback>
                 </Avatar>
                 <Avatar>
-                  <AvatarImage src="/register/avatar3.jpg" alt="@evilrabbit" />
+                  <AvatarImage src="/register/avatar3.jpg" alt="Emi R" />
                   <AvatarFallback>ER</AvatarFallback>
                 </Avatar>
               </AvatarGroup>
-              <p className="text-sm">Over 50,000+ users</p>
+              <p className="text-body-standard text-primary-foreground/90">
+                Over 50,000+ users
+              </p>
             </div>
           </div>
-        </div>
-        <div className="flex-1 p-8 mt-10">
-          <div className="flex flex-col mb-10 gap-2">
-            <h2 className="text-4xl">Create Your Account</h2>
-            <h3>Start scheduling meetings without the hassle.</h3>
+        </section>
+
+        <section className="flex flex-1 flex-col justify-center bg-surface-container p-8 sm:p-10">
+          <div className="mb-8 flex flex-col gap-2">
+            <h2 className="text-display text-foreground">
+              Create your account
+            </h2>
+            <p className="text-body-standard text-muted-foreground">
+              Start scheduling meetings without the hassle.
+            </p>
           </div>
+
           <form id="register-form" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
-              {/* Username */}
               <TextInputController
                 control={form.control}
-                name={"username"}
-                placeholder="Enter Username"
+                name="username"
+                placeholder="Enter username"
                 label="Username"
               />
-              {/* Email */}
+
               <TextInputController
                 control={form.control}
                 name="email"
                 placeholder="Enter your email"
                 label="Email"
               />
-              {/* Password */}
+
               <PasswordInputController control={form.control} name="password" />
-              {/* Confirm Password */}
+
               <PasswordInputController
                 control={form.control}
-                name="confirm_pass"
+                name="confirmPassword"
                 label="Confirm Password"
               />
-              {/* Submit Button - Primary with sapphire glow */}
+
               <Button
                 type="submit"
                 form="register-form"
                 className="w-full mt-2"
+                disabled={form.formState.isSubmitting}
               >
-                Create Account
+                {form.formState.isSubmitting
+                  ? "Creating account..."
+                  : "Create Account"}
               </Button>
             </div>
           </form>
-          <p className="text-body-standard text-muted-foreground text-center mt-6">
+
+          <p className="mt-6 text-body-standard text-muted-foreground">
             Already have an account?{" "}
             <Link
               href="/login"
@@ -159,7 +197,7 @@ export default function RegisterPage() {
               Sign In
             </Link>
           </p>
-        </div>
+        </section>
       </div>
     </div>
   );
