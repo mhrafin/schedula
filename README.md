@@ -1,9 +1,10 @@
 # Schedula
 
-**Smart meeting scheduling with built-in conflict detection.** Schedula is a full-stack meeting management app that prevents double-bookings, notifies participants automatically, and exports to any calendar.
+## Description
 
-<!-- ![Schedula Demo](https://via.placeholder.com/800x400?text=Schedula+Demo+Screenshot) -->
-<!-- TODO: Replace with actual screenshot or GIF of the app in action -->
+Schedula is a full-stack meeting management app that prevents double-bookings, notifies participants automatically, and exports events to any calendar. It pairs a Next.js frontend with a Django REST API so teams can schedule confidently without context switching.
+
+**Demo placeholder:** Add a screenshot, GIF, or short video link here to show the scheduling flow in action.
 
 ---
 
@@ -12,6 +13,8 @@
 Ever tried to schedule a meeting only to realize half your team is already booked? Calendars are supposed to make life easier, but coordinating schedules across multiple people is still a headache.
 
 **Schedula was built to solve this.** When you create a meeting and add participants, it automatically checks for conflicts—no more back-and-forth emails asking "does 2pm work?" If there's a clash, you'll know before you hit save.
+
+Personal motivation placeholder: Add a short story about the real scheduling pain that inspired this project and what you wanted to make better.
 
 I wanted a scheduling tool that:
 - **Catches conflicts instantly** — not after you've already sent invites
